@@ -40,4 +40,23 @@ app.MapGet("/api/tareas", async ([FromServices] TareasContex dbContext,[FromBody
 {
     return Results.Ok(dbContext.Tareas);
 });
+
+app.MapPut("/api/tareas/edit/{id}", async ([FromServices] TareasContex dbContext,[FromBody] Tarea tarea,[FromRoute] Guid id)=>
+{
+    var tarectual = dbContext.Tareas.Find(id);
+
+    if (tarectual != null)
+    {
+        tarectual.CategoriaId= tarea.CategoriaId;
+        tarectual.Titulo=tarea.Titulo;
+        tarectual.PrioridadTarea=tarea.PrioridadTarea;
+        tarectual.Descripcion=tarea.Descripcion;
+        
+        await dbContext.SaveChangesAsync();
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
+
+});
 app.Run();
