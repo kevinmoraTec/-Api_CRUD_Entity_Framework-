@@ -36,10 +36,14 @@ app.MapPost("/api/tareas", async ([FromServices] TareasContex dbContext,[FromBod
 
 });
 
+// Ruta para Crear Un registro 
+
 app.MapGet("/api/tareas", async ([FromServices] TareasContex dbContext,[FromBody] Tarea tarea)=>
 {
     return Results.Ok(dbContext.Tareas);
 });
+
+// Ruta para Editar Un registro 
 
 app.MapPut("/api/tareas/edit/{id}", async ([FromServices] TareasContex dbContext,[FromBody] Tarea tarea,[FromRoute] Guid id)=>
 {
@@ -58,5 +62,23 @@ app.MapPut("/api/tareas/edit/{id}", async ([FromServices] TareasContex dbContext
 
     return Results.NotFound();
 
+});
+
+// Ruta para Eliminar Un registro 
+app.MapDelete("/api/tareas/delete/{id}", async ([FromServices] TareasContex dbContext,[FromRoute] Guid id )  =>
+{
+           var tarectual = dbContext.Tareas.Find(id);
+
+        if (tarectual != null)
+        {
+            dbContext.Remove(tarectual);
+
+            // Siempre de cambiar el Contexto de La Bd debemos utilizar el Metodo
+            await dbContext.SaveChangesAsync();
+            return Results.Ok();
+        }
+
+    return Results.NotFound();
+        
 });
 app.Run();
